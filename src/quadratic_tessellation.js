@@ -64,11 +64,7 @@ export function quadraticTesselation (points, bounds) {
     ]);
 
     let delaunay = Delaunay.from(points);
-    bounds[0] *= 10;
-    bounds[1] *= 10;
-    bounds[2] *= 10;
-    bounds[3] *= 10;
-    let voronoi = delaunay.voronoi(bounds);
+    let voronoi = delaunay.voronoi([bounds[0] * 10, bounds[1] * 10, bounds[2] * 10, bounds[3] * 10]);
 
     let addVertex = (vertices, v) => {
         for (let i = 0; i < vertices.length; i+=1) {
@@ -87,6 +83,7 @@ export function quadraticTesselation (points, bounds) {
     map(points, (p, i) => {
         let poly = voronoi.cellPolygon(i);
         point_to_vertex.set(i, new Set());
+        if (!poly) debugger;
         for(let vert of poly.slice(0, -1)) {
             let v = addVertex(vertices, vert);
             if (!vertex_to_point.has(v)) {
@@ -249,7 +246,8 @@ export function quadraticTesselation (points, bounds) {
             let d = sub(x, point);
             return {
                 f: dot(d,d), 
-                gd: mulScalarVector(2, d)
+                gd: mulScalarVector(2, d),
+                H: [[1,0],[0,1]]
             };
         }
 
@@ -308,10 +306,10 @@ export function quadraticTesselation (points, bounds) {
 
         d = subVectors(x, mean_p);
 
-
         return {
             f: dot(d, mulMatrixVector(H, d)) + dot(b, d) + c,
-            gd: addVectors(mulScalarVector(2, mulMatrixVector(H, d)), b)
+            gd: addVectors(mulScalarVector(2, mulMatrixVector(H, d)), b),
+            H: [[H.val[0], H.val[2]], [H.val[1], H.val[3]]]
         };
     }
 

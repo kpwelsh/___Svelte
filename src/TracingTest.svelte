@@ -11,8 +11,8 @@
 	let time, background_canvas, score;
 	time = 10;
 	score = '?';
-	let width = Math.max(600, screen.width * 0.6),
-		height = Math.max(400, screen.height * 0.6);
+	let width = Math.max(600, screen.width * 0.4),
+		height = Math.max(400, screen.height * 0.4);
 
 	
 	function computeScore() {

@@ -109,7 +109,7 @@
                     virtual
                 );
                 cursor.x = Math.min(cursor_canvas.width, Math.max(0, cursor.x));
-                cursor.y = Math.min(cursor_canvas.width, Math.max(0, cursor.y));
+                cursor.y = Math.min(cursor_canvas.height, Math.max(0, cursor.y));
             } else {
                 cursor = {...virtual};
             }

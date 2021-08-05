@@ -89,9 +89,7 @@ function lineFromTimeStampedPoints(points) {
 function lineSegment(a, b) {
     let direction = [b.x - a.x, b.y - a.y];
     let self = (t) => {
-        if (t > 1.0 || t < 0.0) {
-            t = t % 1.0;
-        }
+        t = Math.max(0, Math.min(t, 1.0));
         return {
             x : a.x + direction[0] * t,
             y : a.y + direction[1] * t
@@ -113,7 +111,7 @@ function lineFromPoints(points) {
     }
 
     let length = lines.map((l) => l.Length)
-    .reduce((s,c) => s+c);
+        .reduce((s,c) => s+c);
     let extent = lines.map((l) => l.Extent)
         .reduce((a, b) => [
             Math.min(a[0], b[0]), 
@@ -122,16 +120,19 @@ function lineFromPoints(points) {
             Math.max(a[3], b[3]), 
         ]);
     let self = (t) => {
-        if (t > 1.0 || t < 0.0) {
-            t = t % 1.0;
-        }
         t *= length;
+        t = Math.max(0, Math.min(t, length));
         for (let l of lines) {
             if (l.Length >= t) {
                 return l(t / l.Length);
             }
             t -= l.Length;
         }
+        
+        // Some adding problem. Should return the 
+        // last point of the last line
+
+        return lines[lines.length - 1](1.0);
     };
     self.Length = length;
     self.Extent = extent;
